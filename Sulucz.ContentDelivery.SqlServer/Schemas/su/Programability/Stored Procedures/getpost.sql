@@ -1,4 +1,8 @@
-﻿CREATE PROCEDURE su.getpost
+﻿--
+--  Gets post details
+--      id and slug are mutually exclusive.
+--
+CREATE PROCEDURE su.getpost
     @errormessage   NVARCHAR(2048)        OUTPUT
    ,@id             INT                 = NULL
    ,@slug           NVARCHAR(256)       = NULL
