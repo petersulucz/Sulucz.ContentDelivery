@@ -1,5 +1,6 @@
 ﻿namespace Sulucz.ContentDelivery.Data
 {
+    using System;
     using System.Collections.Generic;
 
     using Sulucz.ContentDelivery.Data.Models;
@@ -7,7 +8,7 @@
     /// <summary>
     /// The DataLayer interface.
     /// </summary>
-    public interface IDataLayer
+    public interface IDataLayer : IDisposable
     {
         /// <summary>
         /// The get post.
