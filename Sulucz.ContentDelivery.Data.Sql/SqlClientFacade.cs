@@ -82,7 +82,7 @@
             string storedproc,
             Action<SqlParameterCollection> parameterModifier,
             Func<SqlDataReader, T1> reader1,
-            Func<SqlDataReader, T1> reader2) where T1 : class where T2 : class
+            Func<SqlDataReader, T2> reader2) where T1 : class where T2 : class
         {
             return
                 this.ExecuteAsync(storedproc, parameterModifier, new Func<SqlDataReader, object>[] { reader1, reader2 })
