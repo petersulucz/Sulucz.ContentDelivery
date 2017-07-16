@@ -41,7 +41,7 @@
                     "su.getpost",
                     parameters =>
                                   {
-                                      parameters.AddWithValue("postid", postId);
+                                      parameters.AddWithValue("id", postId);
                                       parameters.AddWithValue("slug", slug);
                                       parameters.AddWithValue("top", top);
                                       parameters.AddWithValue("skip", skip);
@@ -58,6 +58,27 @@
                 // ReSharper disable once PossibleInvalidOperationException because its not possible
                 metadata.Select(m => new SuluczPost(m, contentLookup[m.Id.Value].OrderBy(c => c.OrderId)))
                     .ToImmutableList();
+        }
+
+        /// <summary>
+        /// Creates a post, or updates an old one.
+        /// </summary>
+        /// <param name="post">The post.</param>
+        /// <returns>An async task.</returns>
+        public Task SetPost(SuluczPost post)
+        {
+            return this.sqlClient.ExecuteAsync(
+                "su.setpost",
+                parameters =>
+                    {
+                        parameters.AddWithValue("id", post.MetaData.Id);
+                        parameters.AddWithValue("slug", post.MetaData.Slug);
+                        parameters.AddWithValue("title", post.MetaData.Title);
+                        parameters.AddWithValue("description", post.MetaData.Description);
+                        parameters.AddWithValue("whenpublished", post.MetaData.WhenPublished);
+                        parameters.AddWithValue("revision", post.MetaData.Revision);
+                        parameters.Add(ModelFactory.GenerateContentList(post.Contents));
+                    });
         }
 
         /// <summary>

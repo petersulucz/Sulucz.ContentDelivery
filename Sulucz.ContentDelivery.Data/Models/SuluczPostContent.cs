@@ -1,5 +1,7 @@
 ﻿namespace Sulucz.ContentDelivery.Data.Models
 {
+    using System;
+
     /// <summary>
     /// The sulucz post content.
     /// </summary>
@@ -13,14 +15,21 @@
         /// <param name="content">The content.</param>
         /// <param name="contentType">The content type.</param>
         /// <param name="revision">The revision.</param>
-        public SuluczPostContent(int postId, int orderId, string content, SuluczContentType contentType, int revision)
+        /// <param name="uniqueIdentifier">The unique id.</param>
+        public SuluczPostContent(int postId, int orderId, string content, SuluczContentType contentType, int revision, Guid uniqueIdentifier)
         {
             this.Revision = revision;
             this.PostId = postId;
             this.OrderId = orderId;
+            this.UniqueIdentifier = uniqueIdentifier;
             this.Content = content;
             this.ContentType = contentType;
         }
+
+        /// <summary>
+        /// Gets the unique id.
+        /// </summary>
+        public Guid UniqueIdentifier { get; }
 
         /// <summary>
         /// Gets the revision.

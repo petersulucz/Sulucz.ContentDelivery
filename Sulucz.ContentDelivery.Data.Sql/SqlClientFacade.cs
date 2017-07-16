@@ -1,7 +1,6 @@
 ﻿namespace Sulucz.ContentDelivery.Data.Sql
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
@@ -45,6 +44,33 @@
         }
 
         /// <summary>
+        /// Execute a non query.
+        /// </summary>
+        /// <param name="storedProc">The stored procedure.</param>
+        /// <param name="parameterModifier">The parameter modifier.</param>
+        /// <returns>An async task.</returns>
+        public async Task ExecuteAsync(string storedProc, Action<SqlParameterCollection> parameterModifier)
+        {
+            using (var connection = await this.GetConnection())
+            {
+                var command = SqlClientFacade.InitializeCall(storedProc, parameterModifier, connection);
+                await command.ExecuteNonQueryAsync(this.tokenSource.Token).ContinueWith(
+                    queryResult =>
+                        {
+                            if (queryResult.IsFaulted)
+                            {
+                                throw queryResult.Exception.InnerException;
+                            }
+
+                            if (queryResult.IsCanceled)
+                            {
+                                throw new CancellationException("Query was canelled.");
+                            }
+                        });
+            }
+        }
+
+        /// <summary>
         /// Asynchronously execute a stored procedure.
         /// </summary>
         /// <param name="storedproc">The stored procedure.</param>
@@ -64,7 +90,7 @@
                         {
                             return SqlClientFacade.ExecuteContinuation(
                                 task,
-                                result => (IEnumerable<T1>)result.First());
+                                result => result.First().Cast<T1>());
                         });
         }
 
@@ -91,7 +117,7 @@
                         {
                             return SqlClientFacade.ExecuteContinuation(
                                 task,
-                                result => ((IEnumerable<T1>)result[0], (IEnumerable<T2>)result[1]));
+                                result => (result[0].Cast<T1>(), result[1].Cast<T2>()));
                         });
         }
 
@@ -147,6 +173,34 @@
         }
 
         /// <summary>
+        /// Initializes a stored procedure call.
+        /// </summary>
+        /// <param name="storedproc">The stored procedure.</param>
+        /// <param name="parameterModifier">The parrameter modifier.</param>
+        /// <param name="connection">The connection.</param>
+        /// <returns>The command.</returns>
+        private static SqlCommand InitializeCall(string storedproc, Action<SqlParameterCollection> parameterModifier, SqlConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = storedproc;
+
+            // Add default parameters.
+            var returnValue = new SqlParameter("ReturnValue", SqlDbType.Int) { Direction = ParameterDirection.ReturnValue };
+            var errorMessage = new SqlParameter("errormessage", SqlDbType.NVarChar)
+            {
+                Direction = ParameterDirection.Output,
+                Size = 2048
+            };
+
+            command.Parameters.Add(returnValue);
+            command.Parameters.Add(errorMessage);
+
+            parameterModifier(command.Parameters);
+            return command;
+        }
+
+        /// <summary>
         /// The execute async.
         /// </summary>
         /// <param name="storedproc">The stored procedure.</param>
@@ -160,25 +214,7 @@
         {
             using (var connection = await this.GetConnection())
             {
-                var command = connection.CreateCommand();
-                command.CommandType = CommandType.StoredProcedure;
-                command.CommandText = storedproc;
-
-                // Add default parameters.
-                var returnValue = new SqlParameter("ReturnValue", SqlDbType.Int)
-                {
-                    Direction = ParameterDirection.ReturnValue
-                };
-                var errorMessage = new SqlParameter("errormessage", SqlDbType.NVarChar)
-                {
-                    Direction = ParameterDirection.Output,
-                    Size = 2048
-                };
-
-                command.Parameters.Add(returnValue);
-                command.Parameters.Add(errorMessage);
-
-                parameterModifier(command.Parameters);
+                var command = SqlClientFacade.InitializeCall(storedproc, parameterModifier, connection);
 
                 using (var reader = await command.ExecuteReaderAsync(this.tokenSource.Token))
                 {

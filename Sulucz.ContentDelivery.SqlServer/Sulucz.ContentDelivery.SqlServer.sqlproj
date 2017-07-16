@@ -23,6 +23,7 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -79,5 +80,6 @@
   <ItemGroup>
     <None Include="errors.sql" />
     <None Include="local.publish.xml" />
+    <None Include="Sulucz.ContentDelivery.SqlServer.publish.xml" />
   </ItemGroup>
 </Project>

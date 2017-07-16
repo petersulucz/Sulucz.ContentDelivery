@@ -6,7 +6,7 @@
    ,@description    NVARCHAR(512)
    ,@whenpublished  DATETIME2    
    ,@revision       INT          
-   ,@content        su.postcontentlist    READONLY
+   ,@postcontent    su.postcontentlist    READONLY
 AS
     SET NOCOUNT ON
     SET TRANSACTION ISOLATION LEVEL READ COMMITTED
@@ -93,7 +93,7 @@ AS
            ,revision
            ,contenttype
            ,content
-        FROM @content
+        FROM @postcontent
 
         COMMIT TRANSACTION
     END TRY

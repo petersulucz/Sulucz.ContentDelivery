@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Reflection;
 
     using Microsoft.Extensions.Configuration;
 
@@ -16,8 +17,9 @@
         private static readonly Lazy<IDataLayer> LazyInstance = new Lazy<IDataLayer>(
             () =>
                 {
+                    var dir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                     var builder = new ConfigurationBuilder();
-                    builder.SetBasePath(Directory.GetCurrentDirectory());
+                    builder.SetBasePath(dir);
                     builder.AddJsonFile("sqlconfig.json");
                     var config = builder.Build();
                     var connstring = config["ConnectionString"];

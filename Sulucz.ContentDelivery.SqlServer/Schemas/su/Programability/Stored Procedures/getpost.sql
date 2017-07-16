@@ -41,8 +41,8 @@ AS
       AND (@slug IS NULL OR slug = @slug)
     )
     ORDER BY id
-    OFFSET (@top) ROWS
-    FETCH NEXT (@skip) ROWS ONLY
+    OFFSET (@skip) ROWS
+    FETCH NEXT (@top) ROWS ONLY
 
     SELECT
         pc.postid

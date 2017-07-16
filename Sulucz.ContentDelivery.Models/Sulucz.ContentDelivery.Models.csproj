@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdown" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sulucz.ContentDelivery.Common\Sulucz.ContentDelivery.Common.csproj" />
+    <ProjectReference Include="..\Sulucz.ContentDelivery.Data\Sulucz.ContentDelivery.Data.csproj" />
+  </ItemGroup>
+
+</Project>
