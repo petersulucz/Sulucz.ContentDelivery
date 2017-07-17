@@ -50,6 +50,7 @@
         /// Gets the raw content.
         /// </summary>
         [Required]
+
         public PostContent[] RawContent { get; set; }
 
         /// <summary>
@@ -67,7 +68,7 @@
                     this.RawContent[i].Content,
                     this.RawContent[i].ContentType.ParseEnum<SuluczContentType>(),
                     0,
-                    Guid.Empty);
+                    0);
             }
 
             return new SuluczPost(this.MetaData.ToSuluczMetaData(), sulContents);

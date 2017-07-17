@@ -26,8 +26,8 @@
             var slug = (string)reader["slug"];
             var title = (string)reader["title"];
             var description = (string)reader["description"];
-            var whencreated = (DateTimeOffset)reader["whencreated"];
-            var whenpublished = (DateTimeOffset)reader["whenpublished"];
+            var whencreated = (DateTime)reader["whencreated"];
+            var whenpublished = (DateTime)reader["whenpublished"];
             var revision = (int)reader["revision"];
             return new SuluczPostMetaData(id, revision, slug, title, description, whencreated, whenpublished);
         }
@@ -42,7 +42,7 @@
             var postid = (int)reader["postid"];
             var orderid = (int)reader["orderid"];
             var revision = (int)reader["revision"];
-            var uniqueid = (Guid)reader["uniqueid"];
+            var uniqueid = (int)reader["uniqueid"];
             var content = (string)reader["content"];
             var contenttype = (string)reader["contenttype"];
 
@@ -72,7 +72,7 @@
         {
             var record = new SqlDataRecord(
                 new SqlMetaData("orderid", SqlDbType.Int),
-                new SqlMetaData("uniqueid", SqlDbType.UniqueIdentifier),
+                new SqlMetaData("uniqueid", SqlDbType.Int),
                 new SqlMetaData("revision", SqlDbType.Int),
                 new SqlMetaData("contenttype", SqlDbType.NVarChar, 64),
                 new SqlMetaData("content", SqlDbType.NVarChar, 2048));
@@ -80,7 +80,7 @@
             foreach (var content in contents)
             {
                 record.SetInt32(0, content.OrderId);
-                record.SetGuid(1, content.UniqueIdentifier);
+                record.SetInt32(1, content.UniqueIdentifier);
                 record.SetInt32(2, content.Revision);
                 record.SetString(3, content.ContentType.ToString());
                 record.SetString(4, content.Content);

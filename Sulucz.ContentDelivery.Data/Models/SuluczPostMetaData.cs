@@ -1,11 +1,12 @@
 ﻿namespace Sulucz.ContentDelivery.Data.Models
 {
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// The sulucz post content.
     /// </summary>
-    public class SuluczPostMetaData
+    public class SuluczPostMetaData : IValidateable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SuluczPostMetaData"/> class.
@@ -69,5 +70,23 @@
         /// Gets the when published.
         /// </summary>
         public DateTimeOffset WhenPublished { get; }
+
+        public IEnumerable<(string key, string reason)> IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(this.Slug) || this.Slug.Length > 256)
+            {
+                yield return ("Slug", "Must be between 1 and 256 in length");
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Title) || this.Title.Length > 256)
+            {
+                yield return ("Title", "Must be between 1 and 256 in length");
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Description) || this.Description.Length > 512)
+            {
+                yield return ("Description", "Must be between 1 and 512 in length");
+            }
+        }
     }
 }

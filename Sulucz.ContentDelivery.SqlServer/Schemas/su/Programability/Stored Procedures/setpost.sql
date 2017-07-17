@@ -21,21 +21,21 @@ AS
         IF(@id IS NOT NULL AND NOT EXISTS (SELECT TOP 1 1 FROM su.postmeta WHERE id = @id))
         BEGIN
             SET @error = @itemnotfound
-            SET @errormessage = N'The post with id ''' + @id + ''' was not found.'
+            SET @errormessage = N'The post with id ''' + CAST(@id AS NVARCHAR(10)) + ''' was not found.'
             GOTO ErrorHandler
         END
 
-        IF(EXISTS (SELECT TOP 1 1 FROM su.postmeta WHERE slug = @slug AND id <> @id))
+        IF(EXISTS (SELECT TOP 1 1 FROM su.postmeta WHERE slug = @slug AND (id <> @id OR @id IS NULL)))
         BEGIN
             SET @error = @invalidargs
             SET @errormessage = N'The slug ''' + @slug + ''' is already taken.'
             GOTO ErrorHandler
         END
 
-        IF(@id IS NOT NULL AND EXISTS (SELECT TOP 1 1 FROM su.postmeta WHERE id = @id AND revision = @revision))
+        IF(@id IS NOT NULL AND EXISTS (SELECT TOP 1 1 FROM su.postmeta WHERE id = @id AND revision <> @revision))
         BEGIN
             SET @error = @invalidargs
-            SET @errormessage = N'The revision ''' + @revision + ''' does not match.'
+            SET @errormessage = N'The revision ''' + CAST(@revision AS NVARCHAR(4)) + ''' does not match.'
             GOTO ErrorHandler
         END
 
@@ -72,6 +72,13 @@ AS
                 ,whenpublished = @whenpublished
                 ,revision = revision + 1
             WHERE id = @id
+
+            IF (@@ROWCOUNT <> 1)
+            BEGIN
+                SET @error = @itemnotfound
+                SEt @errormessage = N'The post with id ''' + @id + ''' was not found.'
+                GOTO ErrorHandler
+            END
         END
 
         DELETE FROM su.postcontent
@@ -81,7 +88,6 @@ AS
         (
              postid
             ,orderid
-            ,uniqueid
             ,revision
             ,contenttype
             ,content
@@ -89,7 +95,6 @@ AS
         SELECT
             @id
            ,orderid
-           ,uniqueid
            ,revision
            ,contenttype
            ,content

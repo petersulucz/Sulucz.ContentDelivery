@@ -1,6 +1,7 @@
 ﻿namespace Sulucz.ContentDelivery.Models
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
 
     using Sulucz.ContentDelivery.Data.Models;
 
@@ -40,26 +41,34 @@
         /// <summary>
         /// Gets the title.
         /// </summary>
+        [Required]
+        [MaxLength(256)]
         public string Title { get; set; }
 
         /// <summary>
         /// Gets the description.
         /// </summary>
+        [Required]
+        [MaxLength(512)]
         public string Description { get; set; }
 
         /// <summary>
         /// Gets the when published.
         /// </summary>
+        [Required]
         public DateTimeOffset WhenPublished { get; set; }
 
         /// <summary>
         /// Gets the slug.
         /// </summary>
+        [Required]
+        [MaxLength(256)]
         public string Slug { get; set; }
 
         /// <summary>
         /// Gets the post revision number.
         /// </summary>
+        [Required]
         public int Revision { get; set; }
 
         /// <summary>

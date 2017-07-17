@@ -62,6 +62,8 @@
                                 throw queryResult.Exception.InnerException;
                             }
 
+                            SqlClientFacade.VerifyResults(command.Parameters);
+
                             if (queryResult.IsCanceled)
                             {
                                 throw new CancellationException("Query was canelled.");
