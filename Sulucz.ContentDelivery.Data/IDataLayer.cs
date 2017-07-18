@@ -27,5 +27,12 @@
         /// <param name="post">The post.</param>
         /// <returns>An async task.</returns>
         Task SetPost(SuluczPost post);
+
+        /// <summary>
+        /// Deletes a post. Returns success if the post is already deleted.
+        /// </summary>
+        /// <param name="postid">The post id.</param>
+        /// <returns>An async task</returns>
+        Task DeletePost(int postid);
     }
 }

@@ -82,6 +82,21 @@
         }
 
         /// <summary>
+        /// Deletes a post.
+        /// </summary>
+        /// <param name="postid">The post id.</param>
+        /// <returns>An async task</returns>
+        public Task DeletePost(int postid)
+        {
+            return this.sqlClient.ExecuteAsync(
+                "su.deletepost",
+                parameters =>
+                    {
+                        parameters.AddWithValue("id", postid);
+                    });
+        }
+
+        /// <summary>
         /// The dispose.
         /// </summary>
         public void Dispose()

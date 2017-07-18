@@ -86,6 +86,7 @@
     <Build Include="Schemas\su\Tables\Index\ncl_tagtopost.sql" />
     <Build Include="Schemas\cmn\Programability\gettagsforpost.sql" />
     <Build Include="Schemas\cmn\Programability\Types\intlist.sql" />
+    <Build Include="Schemas\su\Programability\Stored Procedures\deletepost.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="errors.sql" />
