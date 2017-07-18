@@ -65,6 +65,9 @@
     <Folder Include="Schemas\su\Programability\Stored Procedures" />
     <Folder Include="Schemas\su\Programability\Types" />
     <Folder Include="Schemas\su\Tables\Index" />
+    <Folder Include="Schemas\cmn" />
+    <Folder Include="Schemas\cmn\Programability" />
+    <Folder Include="Schemas\cmn\Programability\Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schemas\su\su.sql" />
@@ -76,6 +79,13 @@
     <Build Include="Schemas\su\Tables\Index\pk_postcontent.sql" />
     <Build Include="Schemas\su\Tables\Index\ncl_postslug.sql" />
     <Build Include="Schemas\su\Programability\Stored Procedures\getpost.sql" />
+    <Build Include="Schemas\cmn\cmn.sql" />
+    <Build Include="Schemas\cmn\Programability\getmatchingpostmeta.sql" />
+    <Build Include="Schemas\su\Tables\tags.sql" />
+    <Build Include="Schemas\su\Tables\Index\pk_tags.sql" />
+    <Build Include="Schemas\su\Tables\Index\ncl_tagtopost.sql" />
+    <Build Include="Schemas\cmn\Programability\gettagsforpost.sql" />
+    <Build Include="Schemas\cmn\Programability\Types\intlist.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="errors.sql" />

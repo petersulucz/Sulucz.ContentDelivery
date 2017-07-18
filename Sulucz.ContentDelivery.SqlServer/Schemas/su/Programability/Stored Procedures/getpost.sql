@@ -26,24 +26,43 @@ AS
 
     DECLARE @posts TABLE
     (
-        id      INT
+        id              INT             NOT NULL
+       ,slug            NVARCHAR(256)   NOT NULL
+       ,title           NVARCHAR(256)   NOT NULL
+       ,description     NVARCHAR(512)   NOT NULL
+       ,whencreated     DATETIME2       NOT NULL
+       ,whenpublished   DATETIME2       NOT NULL
+       ,revision        INT             NOT NULL
     )
 
     INSERT INTO @posts
-    (
-        id
-    )
-    SELECT
-        id
-    FROM  su.postmeta m
-    WHERE (@id IS NULL AND @slug IS NULL)
-    OR ((@id IS NULL OR id = @id)
-      AND (@slug IS NULL OR slug = @slug)
-    )
-    ORDER BY id
-    OFFSET (@skip) ROWS
-    FETCH NEXT (@top) ROWS ONLY
+    EXECUTE @error = cmn.getmatchingpostmeta @errormessage = @errormessage
+                                            ,@id = @id
+                                            ,@slug = @slug
+                                            ,@skip = @skip
+                                            ,@top = @top
 
+    IF(@error <> 0)
+    BEGIN
+        GOTO ErrorHandler
+    END
+
+    DECLARE @ids cmn.intlist
+
+    INSERT INTO @ids
+    SELECT id
+    FROM @posts
+
+    -- Select the tag info
+    EXECUTE @error = cmn.gettagsforpost @errormessage = @errormessage
+                                       ,@postids = @ids
+
+    IF(@error <> 0)
+    BEGIN
+        GOTO ErrorHandler
+    END
+
+    -- Get the post content
     SELECT
         pc.postid
        ,pc.orderid
@@ -52,19 +71,11 @@ AS
        ,pc.content
        ,pc.contenttype
     FROM su.postcontent pc
-    JOIN @posts p
+    JOIN @ids p
       ON p.id = pc.postid
 
-    SELECT
-        pm.id
-       ,pm.slug
-       ,pm.title
-       ,pm.description
-       ,pm.whencreated
-       ,pm.whenpublished
-       ,pm.revision
-    FROM su.postmeta pm
-    JOIN @posts p
-      ON pm.id = p.id
+    -- Get the post metadata.
+    SELECT * FROM @posts
 
-RETURN 0
+ErrorHandler:
+RETURN @error
