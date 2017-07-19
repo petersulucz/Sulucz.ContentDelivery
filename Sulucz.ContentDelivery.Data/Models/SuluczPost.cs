@@ -14,9 +14,11 @@
         /// </summary>
         /// <param name="metadata">The metadata.</param>
         /// <param name="contents">The contents.</param>
-        public SuluczPost(SuluczPostMetaData metadata, IEnumerable<SuluczPostContent> contents)
+        /// <param name="tags">The list of tags on the post.</param>
+        public SuluczPost(SuluczPostMetaData metadata, IEnumerable<SuluczPostContent> contents, IList<string> tags)
         {
             this.MetaData = metadata;
+            this.Tags = tags;
             this.Contents = contents.ToList();
         }
 
@@ -29,6 +31,8 @@
         /// Gets the contents.
         /// </summary>
         public IList<SuluczPostContent> Contents { get; }
+
+        public IList<string> Tags { get; }
 
         /// <summary>
         /// Returns the list of all invalid reasons.
@@ -56,6 +60,11 @@
             foreach (var reason in this.Contents.SelectMany(c => c.IsValid()))
             {
                 yield return reason;
+            }
+
+            foreach (var tag in this.Tags.Where(t => string.IsNullOrWhiteSpace(t) || t.Length > 64))
+            {
+                yield return ($"Tag {tag}", "Must be between 1 and 64 characters.");
             }
         }
     }

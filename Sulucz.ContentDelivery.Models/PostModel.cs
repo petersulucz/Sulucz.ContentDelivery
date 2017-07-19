@@ -33,12 +33,20 @@
             this.Content = ContentConverter.ConvertContent(post.Contents);
 
             this.RawContent = post.Contents.Select(s => new PostContent(s)).ToArray();
+
+            this.Tags = post.Tags.ToArray();
         }
 
         /// <summary>
         /// Gets the content.
         /// </summary>
         public string Content { get; }
+
+        /// <summary>
+        /// Gets or sets the list of post tags.
+        /// </summary>
+        [Required]
+        public string[] Tags { get; set; }
 
         /// <summary>
         /// Gets the created date.
@@ -71,7 +79,7 @@
                     0);
             }
 
-            return new SuluczPost(this.MetaData.ToSuluczMetaData(), sulContents);
+            return new SuluczPost(this.MetaData.ToSuluczMetaData(), sulContents, this.Tags);
         }
     }
 }

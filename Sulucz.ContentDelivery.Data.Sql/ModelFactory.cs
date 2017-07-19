@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Data.SqlClient;
+    using System.Linq;
 
     using Microsoft.SqlServer.Server;
 
@@ -65,6 +66,20 @@
         }
 
         /// <summary>
+        /// Creates the tag list parameter.
+        /// </summary>
+        /// <param name="tags">The tags list.</param>
+        /// <returns>The parameter.</returns>
+        public static SqlParameter GenerateTagList(IEnumerable<string> tags)
+        {
+            return new SqlParameter("tags", SqlDbType.Structured)
+                       {
+                           TypeName = "su.posttaglist",
+                           Value = ModelFactory.GenerateTagRecords(tags)
+                       };
+        }
+
+        /// <summary>
         /// Reads a tag.
         /// </summary>
         /// <param name="reader">The reader</param>
@@ -96,6 +111,22 @@
                 record.SetString(3, content.ContentType.ToString());
                 record.SetString(4, content.Content);
 
+                yield return record;
+            }
+        }
+
+        /// <summary>
+        /// Gets the data record for tags.
+        /// </summary>
+        /// <param name="tags">The tags list.</param>
+        /// <returns>The list of tags.</returns>
+        private static IEnumerable<SqlDataRecord> GenerateTagRecords(IEnumerable<string> tags)
+        {
+            var record = new SqlDataRecord(new SqlMetaData("tag", SqlDbType.NVarChar, 128));
+
+            foreach (var tag in tags)
+            {
+                record.SetString(0, tag);
                 yield return record;
             }
         }

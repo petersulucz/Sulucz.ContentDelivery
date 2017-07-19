@@ -87,6 +87,7 @@
     <Build Include="Schemas\cmn\Programability\gettagsforpost.sql" />
     <Build Include="Schemas\cmn\Programability\Types\intlist.sql" />
     <Build Include="Schemas\su\Programability\Stored Procedures\deletepost.sql" />
+    <Build Include="Schemas\su\Programability\Types\posttaglist.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="errors.sql" />

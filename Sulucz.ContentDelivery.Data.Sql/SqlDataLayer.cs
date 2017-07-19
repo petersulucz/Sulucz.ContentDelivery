@@ -63,8 +63,14 @@
 
             return
                 // ReSharper disable once PossibleInvalidOperationException because its not possible
-                metadata.Select(m => new SuluczPost(m, contentLookup[m.Id.Value].OrderBy(c => c.OrderId)))
-                    .ToImmutableList();
+                metadata.Select(
+                    m =>
+                        new SuluczPost(
+                            m,
+                            contentLookup[m.Id.Value].OrderBy(c => c.OrderId),
+                            taglookup.Contains(m.Id.Value)
+                                ? taglookup[m.Id.Value].Select(pt => pt.Tag).ToList()
+                                : new List<string>())).ToImmutableList();
         }
 
         /// <summary>
@@ -85,6 +91,12 @@
                         parameters.AddWithValue("whenpublished", post.MetaData.WhenPublished);
                         parameters.AddWithValue("revision", post.MetaData.Revision);
                         parameters.Add(ModelFactory.GenerateContentList(post.Contents));
+
+                        // Add the tags if there are any.
+                        if (post.Tags.Any())
+                        {
+                            parameters.Add(ModelFactory.GenerateTagList(post.Tags));
+                        }
                     });
         }
 

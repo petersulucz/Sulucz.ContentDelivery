@@ -7,6 +7,7 @@
    ,@whenpublished  DATETIME2    
    ,@revision       INT          
    ,@postcontent    su.postcontentlist    READONLY
+   ,@tags           su.posttaglist        READONLY
 AS
     SET NOCOUNT ON
     SET TRANSACTION ISOLATION LEVEL READ COMMITTED
@@ -99,6 +100,24 @@ AS
            ,contenttype
            ,content
         FROM @postcontent
+
+        -- Merge in all of the tags
+        MERGE INTO su.tags AS TARGET
+        USING @tags AS SOURCE
+           ON @id = TARGET.postid AND SOURCE.tag = TARGET.tag
+        WHEN NOT MATCHED BY TARGET THEN
+            INSERT
+            (
+                postid
+               ,tag
+            )
+            VALUES
+            (
+                @id
+               ,SOURCE.tag
+            )
+        WHEN NOT MATCHED BY SOURCE AND TARGET.postid = @id THEN
+        DELETE;
 
         COMMIT TRANSACTION
     END TRY
