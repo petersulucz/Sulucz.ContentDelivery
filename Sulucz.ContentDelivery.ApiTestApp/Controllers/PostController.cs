@@ -43,5 +43,17 @@
         {
             await this.dataLayer.SetPost(model.ToSuluczPost());
         }
+
+        /// <summary>
+        /// Deletes a post by its id.
+        /// </summary>
+        /// <param name="id">The id.</param>
+        /// <returns>The <see cref="Task"/>.</returns>
+        [Route("{id}")]
+        [HttpDelete]
+        public async Task Delete(int id)
+        {
+            await this.dataLayer.DeletePost(id);
+        }
     }
 }

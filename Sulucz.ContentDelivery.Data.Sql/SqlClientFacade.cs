@@ -124,6 +124,36 @@
         }
 
         /// <summary>
+        /// Asynchronously execute a stored procedure.
+        /// </summary>
+        /// <param name="storedproc">The stored procedure.</param>
+        /// <param name="parameterModifier">The parameter modifier.</param>
+        /// <param name="reader1">The reader 1.</param>
+        /// <param name="reader2">The reader 2.</param>
+        /// <param name="reader3">The reader 3.</param>
+        /// <typeparam name="T1">The type which the first reader produces.</typeparam>
+        /// <typeparam name="T2">The type which the second reader produces.</typeparam>
+        /// <typeparam name="T3">The type which the third reader produces</typeparam>
+        /// <returns>The <see cref="Task"/>.</returns>
+        public Task<(IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>)> ExecuteAsync<T1, T2, T3>(
+            string storedproc,
+            Action<SqlParameterCollection> parameterModifier,
+            Func<SqlDataReader, T1> reader1,
+            Func<SqlDataReader, T2> reader2,
+            Func<SqlDataReader, T3> reader3) where T1 : class where T2 : class where T3 : class 
+        {
+            return
+                this.ExecuteAsync(storedproc, parameterModifier, new Func<SqlDataReader, object>[] { reader1, reader2, reader3 })
+                    .ContinueWith(
+                        task =>
+                        {
+                            return SqlClientFacade.ExecuteContinuation(
+                                task,
+                                result => (result[0].Cast<T1>(), result[1].Cast<T2>(), result[2].Cast<T3>()));
+                        });
+        }
+
+        /// <summary>
         /// Verifies standard return codes.
         /// </summary>
         /// <param name="parameters">The parameters to the stored procedure.</param>

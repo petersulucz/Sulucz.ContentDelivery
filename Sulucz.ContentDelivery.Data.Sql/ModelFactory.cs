@@ -9,6 +9,7 @@
 
     using Sulucz.ContentDelivery.Common;
     using Sulucz.ContentDelivery.Data.Models;
+    using Sulucz.ContentDelivery.Data.Sql.Internal;
 
     /// <summary>
     /// The model factory.
@@ -61,6 +62,16 @@
                                     TypeName = "su.postcontentlist",
                                     Value = ModelFactory.GenerateContentRecords(contents)
                                 };
+        }
+
+        /// <summary>
+        /// Reads a tag.
+        /// </summary>
+        /// <param name="reader">The reader</param>
+        /// <returns>A tag with its post id.</returns>
+        internal static PostTag GetTag(SqlDataReader reader)
+        {
+            return new PostTag((int)reader["postid"], (string)reader["tag"]);
         }
 
         /// <summary>

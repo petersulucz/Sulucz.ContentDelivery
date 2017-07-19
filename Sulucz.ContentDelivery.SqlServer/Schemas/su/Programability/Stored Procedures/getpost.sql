@@ -50,8 +50,8 @@ AS
     DECLARE @ids cmn.intlist
 
     INSERT INTO @ids
-    SELECT id
-    FROM @posts
+    SELECT p.id
+    FROM @posts p
 
     -- Select the tag info
     EXECUTE @error = cmn.gettagsforpost @errormessage = @errormessage

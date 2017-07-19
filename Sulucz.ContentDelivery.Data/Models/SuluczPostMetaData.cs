@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// The sulucz post content.
@@ -34,6 +35,7 @@
             this.Description = description;
             this.WhenCreated = whenCreated;
             this.WhenPublished = whenPublished;
+            this.Tags = new List<string>();
         }
 
         /// <summary>
@@ -71,6 +73,11 @@
         /// </summary>
         public DateTimeOffset WhenPublished { get; }
 
+        /// <summary>
+        /// Gets the list of tags.
+        /// </summary>
+        public IList<string> Tags { get; }
+
         public IEnumerable<(string key, string reason)> IsValid()
         {
             if (string.IsNullOrWhiteSpace(this.Slug) || this.Slug.Length > 256)
@@ -86,6 +93,11 @@
             if (string.IsNullOrWhiteSpace(this.Description) || this.Description.Length > 512)
             {
                 yield return ("Description", "Must be between 1 and 512 in length");
+            }
+
+            foreach (var tag in this.Tags.Where(t => string.IsNullOrWhiteSpace(t) || t.Length > 64))
+            {
+                yield return ($"Tag {tag}", "Must be between 1 and 64 characters.");
             }
         }
     }

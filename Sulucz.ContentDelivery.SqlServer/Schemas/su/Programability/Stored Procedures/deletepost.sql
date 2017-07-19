@@ -29,6 +29,7 @@ AS
         SET @errormessage = ERROR_MESSAGE()
         GOTO ErrorHandler
     END CATCH
+RETURN @error
 
 ErrorHandler:
 ROLLBACK TRANSACTION

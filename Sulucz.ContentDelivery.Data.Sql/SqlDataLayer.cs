@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
 
     using Sulucz.ContentDelivery.Data.Models;
+    using Sulucz.ContentDelivery.Data.Sql.Internal;
 
     /// <summary>
     /// The SQL data layer.
@@ -34,25 +35,31 @@
         /// <param name="top">The number of posts to return.</param>
         /// <param name="skip">The number to skip. Used for paging.</param>
         /// <returns>The list of posts.</returns>
-        public async Task<IReadOnlyCollection<SuluczPost>> GetPost(int? postId = null, string slug = null, int top = 20, int skip = 0)
+        public async Task<IReadOnlyCollection<SuluczPost>> GetPost(
+            int? postId = null,
+            string slug = null,
+            int top = 20,
+            int skip = 0)
         {
-            var results =
-                await this.sqlClient.ExecuteAsync<SuluczPostContent, SuluczPostMetaData>(
-                    "su.getpost",
-                    parameters =>
+            var results = await this.sqlClient.ExecuteAsync<PostTag, SuluczPostContent, SuluczPostMetaData>(
+                              "su.getpost",
+                              parameters =>
                                   {
                                       parameters.AddWithValue("id", postId);
                                       parameters.AddWithValue("slug", slug);
                                       parameters.AddWithValue("top", top);
                                       parameters.AddWithValue("skip", skip);
                                   },
+                              ModelFactory.GetTag,
                               ModelFactory.GetContent,
                               ModelFactory.GetMetaData);
 
-            var content = results.Item1;
-            var metadata = results.Item2;
+            var tags = results.Item1;
+            var content = results.Item2;
+            var metadata = results.Item3;
 
             var contentLookup = content.ToLookup(c => c.PostId);
+            var taglookup = tags.ToLookup(t => t.PostId);
 
             return
                 // ReSharper disable once PossibleInvalidOperationException because its not possible
